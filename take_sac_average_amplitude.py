@@ -44,16 +44,15 @@ else:
 
 UpdatePipeline(time=0.0, proxy=clip1)
 
+calculator1 = Calculator(registrationName='Calculator1', Input=clip1)
+calculator1.Function = 'mag(displacement_25_to_1000_amplitude_average)'
+
 # create a new 'Python Annotation'
-pythonAnnotation1 = PythonAnnotation(registrationName='PythonAnnotation1', Input=clip1)
+pythonAnnotation1 = PythonAnnotation(registrationName='PythonAnnotation1', Input=calculator1)
+pythonAnnotation1.ArrayAssociation = 'Point Data'
 
 # Properties modified on pythonAnnotation1
-if file_name == 'displacement_25_to_1000_amplitude_time_average.vtu':
-    pythonAnnotation1.Expression = 'mean(displacement_25_to_1000_amplitude_average)'
-elif file_name == 'displacement_0_to_25_time_average.vtu':
-    pythonAnnotation1.Expression = 'mean(displacement_0_to_25_average_Magnitude)'
-else:
-    ValueError('Invalid file name')
+pythonAnnotation1.Expression = 'mean(Result)'
 
 UpdatePipeline(time=0.0, proxy=pythonAnnotation1)
 
