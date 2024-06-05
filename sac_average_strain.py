@@ -10,11 +10,14 @@ from paraview.simple import *
 #### disable automatic camera reset on 'Show'
 paraview.simple._DisableFirstRenderCameraReset()
 
-
+file_name = "pressure_25_to_1000_amplitude_time_average.vtu"
 # file_name = "displacement_25_to_1000_amplitude_time_average.vtu"
 # file_name = "displacement_0_to_25_time_average.vtu"
 # file_name = "MaxPrincipalStrain_avg.xdmf"
-file_name="GreenLagrangeStrain_25_to_200_max_principal_amplitude_time_average.vtu"
+# file_name="GreenLagrangeStrain_25_to_200_max_principal_amplitude_time_average.vtu"
+# file_name="TAWSS.xdmf"
+# file_name="OSI.xdmf"
+# file_name="RRT.xdmf"
 data = FindSource(file_name)
 # create a new 'Clip'
 clip1 = Clip(registrationName='Clip1', Input=data)
@@ -25,7 +28,8 @@ clip1.Scalars = ['POINTS', '']
 clip1.Crinkleclip = 1
 
 # Properties modified on clip1.ClipType
-case_name="case_16"
+case_name="case_3"
+print(case_name)
 
 if case_name == "case_3":
     clip1.ClipType.Center = [0.108766998291016, 0.103787872314453, 0.0603882255554199]
@@ -40,12 +44,14 @@ elif case_name == "case_16":
     clip1.ClipType.Center = [0.072546, 0.133805, 0.05778]
     clip1.ClipType.Radius = 0.007
 else:
-    ValueError('Invalid case number')
+    print("Invalid case number")
+    exit(1)
 
 UpdatePipeline(time=0.0, proxy=clip1)
 vector_name = clip1.GetPointDataInformation().GetArray(0).Name
 calculator1 = Calculator(registrationName='Calculator1', Input=clip1)
-calculator1.Function = f'({vector_name})'
+print(f'mag({vector_name})')
+calculator1.Function = f'mag({vector_name})'
 
 UpdatePipeline(time=0.0, proxy=calculator1)
 # create a new 'Python Annotation'

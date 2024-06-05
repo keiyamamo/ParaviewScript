@@ -21,8 +21,8 @@ def parse_command_line_args() -> argparse.Namespace:
 def compute_sac_average(input_path, case_name):
     # based on the input path, defined registration name and file name
     file_name = Path(input_path).name
-    data = XMLUnstructuredGridReader(registrationName=file_name, FileName=[input_path])
-    breakpoint()
+    # data = XMLUnstructuredGridReader(registrationName=file_name, FileName=[input_path])
+    data = Xdmf3ReaderS(registrationName=file_name, FileName=[input_path])
     # create a new 'Clip'
     clip1 = Clip(registrationName='Clip1', Input=data)
 
@@ -50,17 +50,17 @@ def compute_sac_average(input_path, case_name):
 
     UpdatePipeline(time=0.0, proxy=clip1)
     vector_name = clip1.GetPointDataInformation().GetArray(0).Name
-    calculator1 = Calculator(registrationName='Calculator1', Input=clip1)
-    # calculator1.Function = f'mag({vector_name})'
-    calculator1.Function = 'displacement_25_to_1000_amplitude_average_Z'
-    breakpoint()
-    UpdatePipeline(time=0.0, proxy=calculator1)
+    # calculator1 = Calculator(registrationName='Calculator1', Input=clip1)
+    # # calculator1.Function = f'mag({vector_name})'
+    # calculator1.Function = 'displacement_25_to_1000_amplitude_average_Z'
+    # breakpoint()
+    # UpdatePipeline(time=0.0, proxy=calculator1)
     # create a new 'Python Annotation'
-    pythonAnnotation1 = PythonAnnotation(registrationName='PythonAnnotation1', Input=calculator1)
+    pythonAnnotation1 = PythonAnnotation(registrationName='PythonAnnotation1', Input=clip1)
     pythonAnnotation1.ArrayAssociation = 'Point Data'
 
     # Properties modified on pythonAnnotation1
-    pythonAnnotation1.Expression = 'mean(Result)'
+    pythonAnnotation1.Expression = f'mean({vector_name})'
 
     UpdatePipeline(time=0.0, proxy=pythonAnnotation1)
 
